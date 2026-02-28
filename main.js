@@ -37,6 +37,21 @@ const btnComprar = document.getElementById("comprar");
 
 
 // Funciones
+function mostrarToast() {
+    Toastify({
+        text: "Se agrego al carrito",
+        duration: 2000,
+        offset: {
+            x: 50,
+            y: 10
+        },
+        onClick: function () {
+            document.getElementById("carrito").scrollIntoView();
+        }
+    }).showToast();
+}
+
+
 // Renderizar productos
 function renderizarProductos() {
     contenedorProductos.innerHTML = "";
@@ -114,6 +129,7 @@ function agregarAlCarrito(producto) {
     guardarCarrito();
     renderizarProductos();
     renderizarCarrito();
+    mostrarToast()
 }
 
 
@@ -158,7 +174,7 @@ function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// Finalizar compra
+// Finalizar compra con sweetalert2
 function finalizarCompra() {
     carrito = [];
     localStorage.removeItem("carrito");
@@ -166,8 +182,30 @@ function finalizarCompra() {
     totalDOM.textContent = "Compra finalizada :)";
 }
 
-btnComprar.addEventListener("click", finalizarCompra);
+btnComprar.addEventListener("click", () => {
+    Swal.fire({
+        title: "Deseas finalizar la compra?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, finalizar compra",
+        cancelButtonText: "Seguir con la compra"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: "Compra finalizada!",
+                text: "Gracias por comprar en nuestra tienda.",
+                icon: "success"
+            });
+            finalizarCompra()
+        }
+    });
+})
 
 // Iniciar simulador
 renderizarProductos();
 renderizarCarrito();
+
+
+

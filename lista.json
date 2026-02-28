@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "nombre": "Camiseta Básica Negra",
+        "precio": 10900
+    },
+    {
+        "id": 2,
+        "nombre": "Camiseta Blanca Oversize",
+        "precio": 22500
+    },
+    {
+        "id": 3,
+        "nombre": "Buzo Gris",
+        "precio": 33000
+    },
+    {
+        "id": 4,
+        "nombre": "Buzo Negra",
+        "precio": 32500
+    },
+    {
+        "id": 5,
+        "nombre": "Cargo Jogger",
+        "precio": 34000
+    },
+    {
+        "id": 6,
+        "nombre": "Jeans Baggy",
+        "precio": 56000
+    },
+    {
+        "id": 7,
+        "nombre": "Campera Cuero",
+        "precio": 95000
+    },
+    {
+        "id": 8,
+        "nombre": "Campera Deportiva",
+        "precio": 40000
+    },
+    {
+        "id": 9,
+        "nombre": "Gorra Urbana",
+        "precio": 15000
+    },
+    {
+        "id": 10,
+        "nombre": "Mochila",
+        "precio": 8000
+    }
+]
