@@ -3,6 +3,7 @@ body {
     padding: 20px;
     background-color: #EDEDED;
     color: #1A1A1A;
+    margin: 0;
 }
 
 .productos {
@@ -12,32 +13,24 @@ body {
     margin-bottom: 40px;
 }
 
+h1 {
+    text-align: center;
+}
+
 .producto {
     background-color: white;
-    border: 1px solid grey;
+    border: 1px solid #CCCCCC;
     padding: 15px;
     border-radius: 12px;
     transition: 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .producto:hover {
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     transform: translateY(-4px);
-}
-
-
-.controles {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0;
-    align-items: center;
-    font-weight: bold;
-
-}
-
-
-button {
-    cursor: pointer;
 }
 
 button {
@@ -46,63 +39,74 @@ button {
     padding: 8px 12px;
     border-radius: 6px;
     transition: 0.3s ease;
+    font-family: inherit;
 }
 
+.controles {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0;
+    align-items: center;
+    font-weight: bold;
+}
+
+.sumar,
+.restar {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    width: 35px;
+}
 
 .agregar {
     background-color: #2962FF;
     color: #FFFFFF;
     width: 100%;
-    margin-top: 10px;
+    font-weight: bold;
 }
 
 .agregar:hover {
     background-color: #0039CB;
 }
 
-.sumar:hover,
-.restar:hover {
-    background-color: #DDDDDD;
-}
-
-
-.eliminar {
-    background-color: #2962ffe1;
-    color: white;
-    margin-left: 10px;
-}
-
-.eliminar:hover {
-    background-color: #0039CB;
-}
-
-
 #carrito {
     background-color: #FFFFFF;
     padding: 20px;
     border: 1px solid #CCCCCC;
     border-radius: 12px;
+    max-width: 500px;
+}
+
+#lista-carrito {
+    padding: 0;
 }
 
 #lista-carrito li {
-    margin-bottom: 10px;
-    color: #444444;
+    list-style: none;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eliminar {
+    background-color: #2962ffe1;
+    color: white;
+    font-size: 12px;
 }
 
 #total {
     font-weight: bold;
     margin-top: 15px;
     color: #2962FF;
-    font-size: large;
+    font-size: 1.2rem;
 }
 
 #comprar {
     background-color: #00C853;
     color: white;
-    margin-top: 15px;
-    font-size: large;
-}
-
-#comprar:hover {
-    background-color: #00A844;
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: bold;
 }

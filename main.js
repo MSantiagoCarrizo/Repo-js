@@ -9,27 +9,11 @@ class Producto {
 }
 
 
-// Array de productos base
-const productosBase = [
-    new Producto(1, "Camiseta Básica Negra", 10900),
-    new Producto(2, "Camiseta Blanca Oversize", 22500),
-    new Producto(3, "Buzo Gris", 33000),
-    new Producto(4, "Buzo Negra", 32500),
-    new Producto(5, "Cargo Jogger", 34000),
-    new Producto(6, "Jeans Baggy", 56000),
-    new Producto(7, "Campera Cuero", 95000),
-    new Producto(8, "Campera Deportiva", 40000),
-    new Producto(9, "Gorra Urbana", 15000),
-    new Producto(10, "Mochila", 28000)
-];
-
-
-// Cargar local storage
-const productos = JSON.parse(localStorage.getItem("productos")) || []
+// Local Storage y DOM
+const listaDeProductos = [];
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+const URLproductosRaiz = "./lista.json";
 
-
-// DOM
 const contenedorProductos = document.getElementById("contenedor-productos");
 const listaCarrito = document.getElementById("lista-carrito");
 const totalDOM = document.getElementById("total");
@@ -37,9 +21,13 @@ const btnComprar = document.getElementById("comprar");
 
 
 // Funciones
+function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
 function mostrarToast() {
     Toastify({
-        text: "Se agrego al carrito",
+        text: "Se agregó al carrito",
         duration: 2000,
         offset: {
             x: 50,
@@ -52,13 +40,50 @@ function mostrarToast() {
 }
 
 
-// Renderizar productos
+// Carrito
+function actualizarTotal() {
+    const total = carrito.reduce((acumulador, prod) => acumulador + prod.precio * prod.cantidad, 0);
+    totalDOM.textContent = `Total: $${total}`;
+}
+
+function eliminarProducto(id) {
+    carrito = carrito.filter(p => p.id !== id);
+    guardarCarrito();
+    renderizarCarrito();
+}
+
+function agregarAlCarrito(producto) {
+    const existe = carrito.find(p => p.id === producto.id);
+
+    if (existe) {
+        existe.cantidad += producto.cantidad;
+    } else {
+        const productoNuevo = new Producto(
+            producto.id,
+            producto.nombre,
+            producto.precio
+        );
+
+        productoNuevo.cantidad = producto.cantidad;
+        carrito.push(productoNuevo);
+    }
+
+    producto.cantidad = 1;
+
+    guardarCarrito();
+    renderizarProductos();
+    renderizarCarrito();
+    mostrarToast();
+}
+
+
+// Renderizado                                  
 function renderizarProductos() {
     contenedorProductos.innerHTML = "";
 
-    productosBase.forEach(prod => {
-
+    listaDeProductos.forEach(prod => {
         const div = document.createElement("div");
+
         div.className = "producto";
 
         div.innerHTML = `
@@ -76,14 +101,13 @@ function renderizarProductos() {
 
         const spanCantidad = div.querySelector(".cantidad");
         const btnSumar = div.querySelector(".sumar");
+        const btnRestar = div.querySelector(".restar");
+        const btnAgregar = div.querySelector(".agregar");
 
         btnSumar.addEventListener("click", () => {
             prod.cantidad++;
             spanCantidad.textContent = prod.cantidad;
         });
-
-
-        const btnRestar = div.querySelector(".restar");
 
         btnRestar.addEventListener("click", () => {
             if (prod.cantidad > 1) {
@@ -91,9 +115,6 @@ function renderizarProductos() {
                 spanCantidad.textContent = prod.cantidad;
             }
         });
-
-
-        const btnAgregar = div.querySelector(".agregar");
 
         btnAgregar.addEventListener("click", () => {
             agregarAlCarrito(prod);
@@ -103,42 +124,10 @@ function renderizarProductos() {
     });
 }
 
-
-// Agregar producto al carrito
-
-function agregarAlCarrito(producto) {
-
-    const existe = carrito.find(p => p.id === producto.id);
-
-    if (existe) {
-        existe.cantidad += producto.cantidad;
-    } else {
-        const productoNuevo = new Producto(
-            producto.id,
-            producto.nombre,
-            producto.precio
-        );
-
-        productoNuevo.cantidad = producto.cantidad;
-
-        carrito.push(productoNuevo);
-    }
-
-    producto.cantidad = 1;
-
-    guardarCarrito();
-    renderizarProductos();
-    renderizarCarrito();
-    mostrarToast()
-}
-
-
-// Renderizar carrito
 function renderizarCarrito() {
     listaCarrito.innerHTML = "";
 
     carrito.forEach(prod => {
-
         const li = document.createElement("li");
 
         li.innerHTML = `
@@ -156,33 +145,34 @@ function renderizarCarrito() {
     actualizarTotal();
 }
 
-// Eliminar producto del carrito
-function eliminarProducto(id) {
-    carrito = carrito.filter(p => p.id !== id);
-    guardarCarrito();
-    renderizarCarrito();
+
+// Fetch
+async function cargarProductosDesdeJSON() {
+    try {
+        const resolve = await fetch(URLproductosRaiz);
+        const data = await resolve.json();
+
+        data.forEach(prod => {
+            const productoPuro = new Producto(prod.id, prod.nombre, prod.precio);
+            listaDeProductos.push(productoPuro);
+        });
+
+        renderizarProductos();
+    } catch (error) {
+        console.error("Error al cargar los productos:", error);
+    }
 }
 
-// Calcular total
-function actualizarTotal() {
-    const total = carrito.reduce((acumulador, prod) => acumulador + prod.precio * prod.cantidad, 0);
-    totalDOM.textContent = `Total: $${total}`;
-}
 
-// Guardar en localStorage
-function guardarCarrito() {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-}
-
-// Finalizar compra con sweetalert2
-function finalizarCompra() {
-    carrito = [];
-    localStorage.removeItem("carrito");
-    renderizarCarrito();
-    totalDOM.textContent = "Compra finalizada :)";
-}
-
+// 7. Evento
 btnComprar.addEventListener("click", () => {
+    if (carrito.length === 0) {
+        return Swal.fire({
+            title: "Carrito vacío",
+            icon: "info"
+        })
+    }
+
     Swal.fire({
         title: "Deseas finalizar la compra?",
         icon: "warning",
@@ -193,19 +183,22 @@ btnComprar.addEventListener("click", () => {
         cancelButtonText: "Seguir con la compra"
     }).then((result) => {
         if (result.isConfirmed) {
+            carrito = [];
+            localStorage.removeItem("carrito");
+            renderizarCarrito();
+            totalDOM.textContent = "Compra finalizada :)";
+
             Swal.fire({
                 title: "Compra finalizada!",
                 text: "Gracias por comprar en nuestra tienda.",
                 icon: "success"
             });
-            finalizarCompra()
         }
     });
-})
+});
+
 
 // Iniciar simulador
-renderizarProductos();
+cargarProductosDesdeJSON();
 renderizarCarrito();
-
-
 
