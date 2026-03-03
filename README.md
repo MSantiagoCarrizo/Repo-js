@@ -19,7 +19,7 @@ Proyecto desarrollado en **JavaScript** para simular el flujo completo de una ti
 - **JavaScript:** Manipulación del DOM, eventos y lógica de objetos.
 - **Librerías Externas:**
 - [SweetAlert2](https://sweetalert2.github.io): Para confirmaciones de finalización de compra.
-- [Toastify JS](https://apvarun.github.io): Para avisos rápidos al usuario.
+- [Toastify JS](https://apvarun.github.io/toastify-js/): Para avisos rápidos al usuario.
 - **Manejo de Datos:** Fetch API para consumo de recursos JSON y Web Storage API.
 
 
